@@ -26,6 +26,14 @@ strike() { # host
 export -f strike 2>/dev/null || true
 export KEYS_STR="${KEYS[*]}" 2>/dev/null || true
 
+push_witness() {
+  set +e
+  mkdir -p out
+  cp "$OUT" "out/watch_$(date -u +%H%M%S).tsv" 2>/dev/null
+  git config user.email ul@local 2>/dev/null; git config user.name ul 2>/dev/null
+  git add out/ 2>/dev/null; git commit -qm "watch witness $1" 2>/dev/null; git push origin HEAD:main 2>/dev/null
+  echo "witness_push_rc=$?"
+}
 i=0
 while [ "$i" -lt "$ITERS" ]; do
   i=$((i+1)); T0=$(date +%s); TS=$(date -u +%FT%TZ)
@@ -33,8 +41,9 @@ while [ "$i" -lt "$ITERS" ]; do
   if [ -n "$open" ]; then
     echo "ITER $i $TS OPEN22: $open" | tee -a "$OUT"
     for h in $open; do strike "$h"; done
+    push_witness "$open"
   else
-    [ $((i % 10)) -eq 0 ] && echo "ITER $i $TS no-open22 (still watching)" | tee -a "$OUT"
+    if [ $((i % 10)) -eq 0 ]; then echo "ITER $i $TS no-open22 (still watching)" | tee -a "$OUT"; push_witness "hb$i"; fi
   fi
   T1=$(date +%s); d=$((T1-T0)); [ $d -lt $CADENCE ] && sleep $((CADENCE-d)) || sleep 2
 done
