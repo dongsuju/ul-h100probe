@@ -1,0 +1,17 @@
+name: webprobe2
+on:
+  workflow_dispatch:
+jobs:
+  w:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: w
+        run: |
+          curl -sL -m 60 https://raw.githubusercontent.com/dongsuju/ul-h100probe/main/webprobe2.py -o webprobe2.py
+          python3 webprobe2.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: res5
+          path: ulres5.txt
