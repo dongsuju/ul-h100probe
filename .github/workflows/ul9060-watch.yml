@@ -1,0 +1,36 @@
+name: ul9060-watch
+on:
+  workflow_dispatch:
+    inputs:
+      iters: {default: "300"}
+      cadence: {default: "60"}
+permissions: {contents: read}
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - name: decode
+        env:
+          KB1: ${{ secrets.KB1 }}
+          KB2: ${{ secrets.KB2 }}
+          KB3: ${{ secrets.KB3 }}
+        run: |
+          set -eu
+          mkdir -p "$HOME/b"
+          printf '%s%s%s' "$KB1" "$KB2" "$KB3" | base64 -d > "$HOME/b/bundle.tgz"
+          tar -xzf "$HOME/b/bundle.tgz" -C "$HOME/b"
+          echo keys=$(ls "$HOME/b/keys" | wc -l)
+      - name: watch
+        env:
+          ITERS: ${{ inputs.iters }}
+          CADENCE: ${{ inputs.cadence }}
+        run: bash scripts/watch_strike.sh
+      - name: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: watch_strike
+          path: /home/runner/b/watch_strike.tsv
+          if-no-files-found: warn
