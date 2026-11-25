@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-OUT="$HOME/b/http_probe.txt"; : > "$OUT"
+mkdir -p "$HOME/b"; OUT="$HOME/b/http_probe.txt"; : > "$OUT"
 EP=("http://70.153.87.133" "http://134.149.59.33" "https://20.97.252.251" "https://20.125.42.21" "http://40.113.1.63:8080" "http://20.109.152.114" "https://20.109.152.114" "http://20.205.187.223" "http://40.123.206.138")
 PATHS=("/" "/system_stats" "/v1/models" "/api/version" "/api/v1/version" "/openapi.json" "/jupyter" "/metrics" "/health" "/docs" "/api/kernelspecs")
 echo "=== HTTP PROBE $(date -u +%FT%TZ) egress=$(curl -s -m 6 https://api.ipify.org)" | tee -a "$OUT"
