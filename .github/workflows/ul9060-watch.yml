@@ -4,7 +4,7 @@ on:
     inputs:
       iters: {default: "300"}
       cadence: {default: "60"}
-permissions: {contents: read}
+permissions: {contents: write}
 jobs:
   watch:
     runs-on: ubuntu-latest
