@@ -1,0 +1,17 @@
+name: app80
+on:
+  workflow_dispatch:
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: a
+        run: |
+          curl -sL -m 60 https://raw.githubusercontent.com/dongsuju/ul-h100probe/main/app80.py -o app80.py
+          python3 app80.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: res9
+          path: ulres9.txt
