@@ -1,0 +1,26 @@
+name: ul9060-deep
+on: [workflow_dispatch]
+permissions: {contents: write}
+jobs:
+  deep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: decode
+        env: {KB1: "${{ secrets.KB1 }}", KB2: "${{ secrets.KB2 }}", KB3: "${{ secrets.KB3 }}"}
+        run: |
+          set -eu
+          mkdir -p "$HOME/b"
+          printf '%s%s%s' "$KB1" "$KB2" "$KB3" | base64 -d > "$HOME/b/bundle.tgz"
+          tar -xzf "$HOME/b/bundle.tgz" -C "$HOME/b"
+          echo keys=$(ls "$HOME/b/keys" | wc -l)
+      - name: deep
+        run: bash scripts/deep.sh
+      - name: keep
+        if: always()
+        run: |
+          set +e
+          git config user.email ul@local; git config user.name ul
+          mkdir -p out; cp "$HOME/b/deep.tsv" out/deep_$(date -u +%H%M%S).tsv
+          git add out/; git commit -qm "deep ladder"; git push origin HEAD:main; echo rc=$?
