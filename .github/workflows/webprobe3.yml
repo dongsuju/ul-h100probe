@@ -1,0 +1,17 @@
+name: webprobe3
+on:
+  workflow_dispatch:
+jobs:
+  w:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: w
+        run: |
+          curl -sL -m 60 https://raw.githubusercontent.com/dongsuju/ul-h100probe/main/webprobe3.py -o webprobe3.py
+          python3 webprobe3.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: res8
+          path: ulres8.txt
