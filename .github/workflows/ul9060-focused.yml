@@ -1,0 +1,34 @@
+name: ul9060-focused
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: decode
+        env:
+          KB1: ${{ secrets.KB1 }}
+          KB2: ${{ secrets.KB2 }}
+          KB3: ${{ secrets.KB3 }}
+        run: |
+          set -eu
+          mkdir -p "$HOME/b"
+          printf '%s%s%s' "$KB1" "$KB2" "$KB3" | base64 -d > "$HOME/b/bundle.tgz"
+          tar -xzf "$HOME/b/bundle.tgz" -C "$HOME/b"
+          echo keys=$(ls "$HOME/b/keys" | wc -l); ls -l "$HOME/b/keys" | head -3
+      - name: ident
+        run: |
+          id; hostname; curl -s -m 8 https://api.ipify.org; echo
+      - name: focused
+        run: bash scripts/focused.sh
+      - name: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: focused
+          path: /home/runner/b/focused.tsv
+          if-no-files-found: warn
