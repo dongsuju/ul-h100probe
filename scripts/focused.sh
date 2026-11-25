@@ -1,6 +1,6 @@
 #!/bin/bash
 set -u
-B="$HOME/b"; OUT="$B/focused.tsv"; : > "$OUT"
+B="$HOME/b"; OUT="$B/focused.tsv"; export OUT; : > "$OUT"
 HOSTS=(70.153.87.133 20.109.152.114)
 USERS=(t19 azureuser root ubuntu admin)
 mapfile -t KEYS < <(ls "$B"/keys/k* 2>/dev/null); chmod 600 "${KEYS[@]}" 2>/dev/null || true
