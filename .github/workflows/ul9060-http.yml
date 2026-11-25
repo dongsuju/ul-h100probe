@@ -15,4 +15,4 @@ jobs:
           set +e
           git config user.email ul@local; git config user.name ul
           mkdir -p out; cp "$HOME/b/http_probe.txt" out/http_probe_$(date -u +%H%M%S).txt
-          git add out/; git commit -qm "http probe"; git push origin HEAD:main; echo rc=$?
+          git add out/; git commit -qm "http probe"; git pull --rebase -q origin main || true; git push origin HEAD:main; echo rc=$?
