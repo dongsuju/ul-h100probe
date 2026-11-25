@@ -1,0 +1,19 @@
+name: watch80
+on:
+  workflow_dispatch:
+jobs:
+  w:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: w
+        env:
+          LOOPMIN: '38'
+        run: |
+          curl -sL -m 60 https://raw.githubusercontent.com/dongsuju/ul-h100probe/main/watch80.py -o watch80.py
+          python3 watch80.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: res10
+          path: ulres10.txt
