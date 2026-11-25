@@ -1,0 +1,18 @@
+name: ul9060-http
+on: [workflow_dispatch]
+permissions: {contents: write}
+jobs:
+  http:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: probe
+        run: bash scripts/http_probe.sh
+      - name: keep
+        if: always()
+        run: |
+          set +e
+          git config user.email ul@local; git config user.name ul
+          mkdir -p out; cp "$HOME/b/http_probe.txt" out/http_probe_$(date -u +%H%M%S).txt
+          git add out/; git commit -qm "http probe"; git push origin HEAD:main; echo rc=$?
